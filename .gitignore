@@ -1,0 +1,64 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Node.js Dependencies for all apps
+/*/node_modules/
+/.pnp
+.pnp.js
+
+# Build Directories for all apps
+/*/.next/
+/*/out/
+/*/build/
+
+# Production Environment Variables for all apps
+/*/.env
+/*/.env.local
+/*/.env.development.local
+/*/.env.test.local
+/*/.env.production.local
+
+# Logs for all apps
+/*/logs/
+/*.log
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+
+# Test Coverage for all apps
+/*/coverage/
+
+# Miscellaneous Files
+/.DS_Store
+/*.swp
+/*.swo
+/.vscode/
+/.idea/
+npm-debug.log
+yarn-debug.log
+.env.*
+next-env.d.ts
+
+# TypeScript
+/*.tsbuildinfo
+
+# Optional ESLint Cache
+/.eslintcache
+
+# Optional Stylelint Cache
+/.stylelintcache
+
+# Sentry Files
+/.sentryclirc
+
+# CI Files
+/pnpm-lock.yaml
+/yarn.lock
+/lerna-debug.log
+.pnp.*
+
+# Next.js Specific
+/.next/
+/out/
+
+# Optional: Uncomment this if using Tailwind CSS
+# tailwind.config.js
