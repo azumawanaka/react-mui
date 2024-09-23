@@ -21,45 +21,46 @@ const Tictactoe = () => {
 
 	const [board, setBoard] = useState(Array(9).fill(null));
 	const [isPlayerTurn, setIsPlayerTurn] = useState(false);
-	const [yourScore, setYourScore] = useState(0);
-	const [computerScore, setComputerScore] = useState(0);
+	const [pScores, setPScores] = useState(0);
+	const [cScores, setCScores] = useState(0);
+	const [result, setResult] = useState("");
 
 	useEffect(() => {
-		if (!isPlayerTurn) {
-			computerTurn(board);
-		}
+		const savedPScores = localStorage.getItem("pScores");
+		const savedCScores = localStorage.getItem("cScores");
 
-		let pScore = 0;
-		let cScore = 0;
-		let result = calculateWinner(board);
-		if (result === "blue") {
-			setYourScore(pScore++);
-		} else if (result === "red") {
-			setComputerScore(cScore++);
-		}
-	}, [isPlayerTurn, board, yourScore, computerScore]);
+		if (savedPScores) setPScores(parseInt(savedPScores));
+		if (savedCScores) setCScores(parseInt(savedCScores));
+	}, []);
 
 	useEffect(() => {
-		if (!isPlayerTurn) {
-			computerTurn(board);
-		}
+		const winner = calculateWinner(board);
+		let res = "";
 
-		let pScore = 0;
-		let cScore = 0;
-		let result = calculateWinner(board);
-		if (result === "blue") {
-			pScore++;
-			result = "Player wins!";
-		} else if (result === "red") {
-			cScore++;
-			result = "Computer wins!";
+		if (winner === "blue") {
+			let savedPScores = parseInt(localStorage.getItem("pScores")) || 0;
+			savedPScores++;
+			localStorage.setItem("cScores", savedPScores);
+			setCScores(savedPScores);
+			res = "Player wins!";
+		} else if (winner === "red") {
+			let savedCScores = parseInt(localStorage.getItem("cScores")) || 0;
+			savedCScores++;
+			localStorage.setItem("cScores", savedCScores);
+			setCScores(savedCScores);
+			res = "Computer wins!";
 		} else if (getAvailableTiles(board).length === 0) {
-			result = "It's a draw!";
+			res = "It's a draw!";
 		}
 
-		setYourScore(pScore);
-		setComputerScore(cScore);
-	}, [isPlayerTurn, board, yourScore, computerScore]);
+		setResult(res);
+	}, [board]);
+
+	useEffect(() => {
+		if (!isPlayerTurn) {
+			computerTurn(board);
+		}
+	}, [isPlayerTurn]);
 
 	const calculateWinner = (squares) => {
 		for (let i = 0; i < lines.length; i++) {
@@ -120,8 +121,9 @@ const Tictactoe = () => {
 
 	const computerTurn = (currentBoard) => {
 		const availableTiles = getAvailableTiles(currentBoard);
-		const isFirstMove = availableTiles.length === 9;
+		if (availableTiles.length === 0) return;
 
+		const isFirstMove = availableTiles.length === 9;
 		let newBoard = [...currentBoard];
 
 		if (isFirstMove) {
@@ -135,7 +137,6 @@ const Tictactoe = () => {
 		}
 
 		setBoard(newBoard);
-
 		if (!calculateWinner(newBoard)) {
 			setIsPlayerTurn(true);
 		}
@@ -150,18 +151,13 @@ const Tictactoe = () => {
 	};
 
 	const restart = () => {
-		setBoard(Array(9).fill(null));
+		const emptyBoard = Array(9).fill(null);
+		setBoard(emptyBoard);
 		setIsPlayerTurn(false);
-	};
+		setResult("");
 
-	let result = calculateWinner(board);
-	if (result === "blue") {
-		result = "Player wins!";
-	} else if (result === "red") {
-		result = "Computer wins!";
-	} else if (getAvailableTiles(board).length === 0) {
-		result = "It's a draw!";
-	}
+		computerTurn(emptyBoard);
+	};
 
 	return (
 		<div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -192,18 +188,20 @@ const Tictactoe = () => {
 				))}
 			</Grid>
 
-			<Button
-				variant="contained"
-				color="info"
-				onClick={() => restart()}
-				style={{ marginTop: "20px", marginRight: 5 }}
-			>
-				Restart
-			</Button>
+			{result ? (
+				<Button
+					variant="contained"
+					color="info"
+					onClick={() => restart()}
+					style={{ marginTop: "20px", marginRight: 5 }}
+				>
+					Restart
+				</Button>
+			) : null}
 
 			<ListItem component="span" href="#simple-list">
-				<ListItemText primary={`You: ${yourScore}`} />
-				<ListItemText primary={`Computer: ${computerScore}`} />
+				<ListItemText primary={`You: ${pScores}`} />
+				<ListItemText primary={`Computer: ${cScores}`} />
 			</ListItem>
 		</div>
 	);
