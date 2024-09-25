@@ -10,8 +10,6 @@ import {
 	Divider,
 } from "@mui/material";
 
-import clsx from "clsx";
-
 import TodoList from "@/components/TodoList";
 import useTodoStyles from "@/styles/TodoStyles";
 import ConfirmDialog from "@/libraries/Dialogs/Confirm";

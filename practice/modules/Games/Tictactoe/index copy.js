@@ -5,8 +5,9 @@ import {
 	ListItem,
 	ListItemText,
 	Typography,
-	CircularProgress, // Import CircularProgress
 } from "@mui/material";
+import ImageList from "@mui/material/ImageList";
+import ImageListItem from "@mui/material/ImageListItem";
 
 const Tictactoe = () => {
 	const [lines] = useState([
@@ -25,7 +26,14 @@ const Tictactoe = () => {
 	const [pScores, setPScores] = useState(0);
 	const [cScores, setCScores] = useState(0);
 	const [result, setResult] = useState("");
-	const [isLoading, setIsLoading] = useState(false); // Loading state
+
+	const [playerChoice, setPlayerChoice] = useState("rock");
+	const [computerChoice, setComputerChoice] = useState("rock");
+
+	useEffect(() => {
+		const img = getRandomImg();
+		setPlayerChoice(img);
+	}, [playerChoice]);
 
 	useEffect(() => {
 		const savedPScores = localStorage.getItem("pScores");
@@ -42,8 +50,8 @@ const Tictactoe = () => {
 		if (winner === "blue") {
 			let savedPScores = parseInt(localStorage.getItem("pScores")) || 0;
 			savedPScores++;
-			localStorage.setItem("pScores", savedPScores);
-			setPScores(savedPScores);
+			localStorage.setItem("cScores", savedPScores);
+			setCScores(savedPScores);
 			res = "Player wins!";
 		} else if (winner === "red") {
 			let savedCScores = parseInt(localStorage.getItem("cScores")) || 0;
@@ -125,28 +133,23 @@ const Tictactoe = () => {
 		const availableTiles = getAvailableTiles(currentBoard);
 		if (availableTiles.length === 0) return;
 
-		setIsLoading(true); // Start loading
+		const isFirstMove = availableTiles.length === 9;
+		let newBoard = [...currentBoard];
 
-		setTimeout(() => {
-			const isFirstMove = availableTiles.length === 9;
-			let newBoard = [...currentBoard];
-
-			if (isFirstMove) {
-				const randomTile = getRandomElement(availableTiles);
-				newBoard[randomTile] = "red";
-			} else {
-				const bestMove = minimax(currentBoard, true);
-				if (bestMove.index !== undefined) {
-					newBoard[bestMove.index] = "red";
-				}
+		if (isFirstMove) {
+			const randomTile = getRandomElement(availableTiles);
+			newBoard[randomTile] = "red";
+		} else {
+			const bestMove = minimax(currentBoard, true);
+			if (bestMove.index !== undefined) {
+				newBoard[bestMove.index] = "red";
 			}
+		}
 
-			setBoard(newBoard);
-			setIsLoading(false); // Stop loading
-			if (!calculateWinner(newBoard)) {
-				setIsPlayerTurn(true);
-			}
-		}, 1000); // Delay of 1 second (1000 milliseconds)
+		setBoard(newBoard);
+		if (!calculateWinner(newBoard)) {
+			setIsPlayerTurn(true);
+		}
 	};
 
 	const handleClick = (index) => {
@@ -164,6 +167,12 @@ const Tictactoe = () => {
 		setResult("");
 
 		computerTurn(emptyBoard);
+	};
+
+	const getRandomImg = (arr) => {
+		const imgs = ["rock", "paper", "scissor"];
+		const randomImg = Math.floor(Math.random() * imgs.length);
+		return imgs[randomImg];
 	};
 
 	return (
@@ -188,30 +197,27 @@ const Tictactoe = () => {
 									: "white",
 						}}
 						onClick={() => handleClick(index)}
-						disabled={
-							isLoading ||
-							Boolean(value) ||
-							calculateWinner(board)
-						}
 					>
-						{isLoading && !value ? (
-							<CircularProgress size={24} />
-						) : null}
 						{value === "blue" && "Player"}
 						{value === "red" && "Computer"}
 					</Button>
 				))}
 			</Grid>
-			<Button
-				variant="contained"
-				onClick={restart}
-				style={{ marginTop: "20px" }}
-			>
-				Restart
-			</Button>
-			<ListItem>
-				<ListItemText primary={`Player Score: ${pScores}`} />
-				<ListItemText primary={`Computer Score: ${cScores}`} />
+
+			{result ? (
+				<Button
+					variant="contained"
+					color="info"
+					onClick={() => restart()}
+					style={{ marginTop: "20px", marginRight: 5 }}
+				>
+					Restart
+				</Button>
+			) : null}
+
+			<ListItem component="span" href="#simple-list">
+				<ListItemText primary={`You: ${pScores}`} />
+				<ListItemText primary={`Computer: ${cScores}`} />
 			</ListItem>
 		</div>
 	);

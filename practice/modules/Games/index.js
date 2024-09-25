@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { Container, Grid, Paper } from "@mui/material";
 import Tictactoe from "./Tictactoe";
 import Mine from "./Mine";
 

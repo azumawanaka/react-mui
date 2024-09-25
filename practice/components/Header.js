@@ -78,9 +78,9 @@ const Header = () => {
 						</Button>
 						<Button
 							color="inherit"
-							onClick={() => handleNavigation("/contact")}
+							onClick={() => handleNavigation("/chatgpt")}
 						>
-							Contact
+							ChatGpt
 						</Button>
 					</div>
 				)}
