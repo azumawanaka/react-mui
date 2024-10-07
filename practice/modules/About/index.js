@@ -19,7 +19,7 @@ const About = () => {
 	return (
 		<Container>
 			<Card style={{ padding: 16, marginTop: 16 }}>
-				<Typography variant="h4">About</Typography>
+				<Typography variant="h4">Infinite Scroll Effect</Typography>
 
 				<InfiniteScroll
 					initialItems={Array.from({ length: 10 }, (_, i) => i)}

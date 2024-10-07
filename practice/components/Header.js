@@ -74,13 +74,7 @@ const Header = () => {
 							color="inherit"
 							onClick={() => handleNavigation("/about")}
 						>
-							About
-						</Button>
-						<Button
-							color="inherit"
-							onClick={() => handleNavigation("/chatgpt")}
-						>
-							ChatGpt
+							Infinite scroll effect
 						</Button>
 					</div>
 				)}
